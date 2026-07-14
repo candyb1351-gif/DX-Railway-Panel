@@ -4,11 +4,7 @@
 FROM --platform=$BUILDPLATFORM node:22-alpine AS frontend
 WORKDIR /src/frontend
 COPY frontend/package.json frontend/package-lock.json ./
-<<<<<<< HEAD
 RUN npm config set maxsockets 3 \
-=======
-RUN npm config set registry https://registry.npmjs.org/ \
->>>>>>> 3f6ebcb6167359720d1bdf5ad9bad1e4062284c0
   && npm ci
 COPY frontend/ ./
 COPY internal/web/translation /src/internal/web/translation
