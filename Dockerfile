@@ -4,12 +4,22 @@
 FROM --platform=$BUILDPLATFORM node:22-alpine AS frontend
 WORKDIR /src/frontend
 COPY frontend/package.json frontend/package-lock.json ./
-RUN npm cache clean --force \
-  && npm config set maxsockets 3 \
-  && npm ci
-COPY frontend/ ./
-COPY internal/web/translation /src/internal/web/translation
-RUN npm run build
+
+RUN set -eux; \
+    npm config set registry https://registry.npmjs.org/; \
+    npm config set maxsockets 3; \
+    npm ci \
+    || ( \
+        echo "Retry #1: upgrading npm..."; \
+        npm install -g npm@10.9.2; \
+        npm cache clean --force; \
+        npm ci \
+    ) \
+    || ( \
+        echo "Retry #2: clean install..."; \
+        rm -rf node_modules package-lock.json; \
+        npm install \
+    )
 
 # ========================================================
 # Stage: Builder
