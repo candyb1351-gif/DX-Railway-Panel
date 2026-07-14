@@ -49,6 +49,7 @@ COPY --from=builder /app/build/ /app/
 COPY --from=builder /app/DockerEntrypoint.sh /app/
 COPY --from=builder /app/DX.sh /usr/bin/DX
 COPY --from=builder /app/internal/web/translation /app/internal/web/translation
+COPY railway-entrypoint.sh /app/
 
 
 # Configure fail2ban
@@ -60,15 +61,18 @@ RUN rm -f /etc/fail2ban/jail.d/alpine-ssh.conf \
 
 RUN chmod +x \
   /app/DockerEntrypoint.sh \
+  /app/railway-entrypoint.sh \
   /app/DX \
   /usr/bin/DX
 
 ENV DX_IN_DOCKER="true"
-ENV DX_MAIN_FOLDER="/app"
 ENV DX_ENABLE_FAIL2BAN="true"
 ENV DX_DB_TYPE=""
 ENV DX_DB_DSN=""
 EXPOSE 2053
 VOLUME [ "/etc/DX" ]
 CMD [ "./DX" ]
-ENTRYPOINT [ "/app/DockerEntrypoint.sh" ]
+# railway-entrypoint.sh syncs the panel port with Railway's $PORT (if present)
+# then execs the normal DockerEntrypoint.sh -- on any other host $PORT is
+# unset so behavior is 100% unchanged.
+ENTRYPOINT [ "/app/railway-entrypoint.sh" ]
