@@ -1,0 +1,89 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "go: build",
+      "type": "shell",
+      "command": "go",
+      "args": [
+        "build",
+        "-o",
+        "bin/DX.exe",
+        "./main.go"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [
+        "$go"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "go: run",
+      "type": "shell",
+      "command": "go",
+      "args": [
+        "run",
+        "./main.go"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "env": {
+          "DX_DEBUG": "true"
+        }
+      },
+      "problemMatcher": [
+        "$go"
+      ]
+    },
+    {
+      "label": "go: test",
+      "type": "shell",
+      "command": "go",
+      "args": [
+        "test",
+        "./..."
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [
+        "$go"
+      ],
+      "group": "test"
+    },
+    {
+      "label": "go: vet",
+      "type": "shell",
+      "command": "go",
+      "args": [
+        "vet",
+        "./..."
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [
+        "$go"
+      ]
+    },
+    {
+      "label": "go: fmt",
+      "type": "shell",
+      "command": "gofmt",
+      "args": [
+        "-l",
+        "-w",
+        "."
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    }
+  ]
+}

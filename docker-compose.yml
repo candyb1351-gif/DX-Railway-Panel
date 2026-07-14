@@ -1,0 +1,42 @@
+services:
+  DX:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    container_name: DX_app
+    # hostname: yourhostname <- optional
+    # The bundled Fail2ban (DX_ENABLE_FAIL2BAN below) enforces the IP limit
+    # with iptables, which needs NET_ADMIN. Without these caps a ban is logged
+    # and shown in fail2ban status but never actually applied. NET_RAW covers
+    # ip6tables. If you disable Fail2ban, you can drop cap_add.
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    volumes:
+      - $PWD/db/:/etc/DX/
+      - $PWD/cert/:/root/cert/
+    environment:
+      XRAY_VMESS_AEAD_FORCED: "false"
+      DX_ENABLE_FAIL2BAN: "true"
+      # DX_INIT_WEB_BASE_PATH: "/"
+      # To use PostgreSQL instead of the default SQLite, run:
+      #   docker compose --profile postgres up -d
+      # and uncomment the two lines below.
+      # DX_DB_TYPE: "postgres"
+      # DX_DB_DSN: "postgres://DX:DX@postgres:5432/DX?sslmode=disable"
+    tty: true
+    ports:
+      - "2053:2053"
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: DX_postgres
+    profiles: ["postgres"]
+    environment:
+      POSTGRES_USER: DX
+      POSTGRES_PASSWORD: DX
+      POSTGRES_DB: DX
+    volumes:
+      - $PWD/pgdata/:/var/lib/postgresql/data
+    restart: unless-stopped

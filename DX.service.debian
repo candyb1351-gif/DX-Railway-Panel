@@ -1,0 +1,17 @@
+[Unit]
+Description=DX Service
+After=network.target
+Wants=network.target
+
+[Service]
+EnvironmentFile=-/etc/default/DX
+Environment="XRAY_VMESS_AEAD_FORCED=false"
+Type=simple
+WorkingDirectory=/usr/local/DX/
+ExecStart=/usr/local/DX/DX
+ExecReload=/bin/kill -USR1 $MAINPID
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target

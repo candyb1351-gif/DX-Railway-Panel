@@ -1,0 +1,38 @@
+{
+  "$schema": "vscode://schemas/launch",
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Run DX (Debug)",
+      "type": "go",
+      "request": "launch",
+      "mode": "auto",
+      "program": "${workspaceFolder}",
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "DX_DEBUG": "true",
+        "DX_DB_FOLDER": "DX",
+        "DX_LOG_FOLDER": "DX",
+        "DX_BIN_FOLDER": "DX"
+      },
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Run DX (Postgres)",
+      "type": "go",
+      "request": "launch",
+      "mode": "auto",
+      "program": "${workspaceFolder}",
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "DX_DEBUG": "true",
+        "DX_LOG_FOLDER": "DX",
+        "DX_BIN_FOLDER": "DX",
+        "DX_DB_TYPE": "postgres",
+        "DX_DB_DSN": "postgres://DX:DXpass@127.0.0.1:5432/DX?sslmode=disable",
+        "PATH": "C:\\Program Files\\PostgreSQL\\18\\bin;${env:PATH}"
+      },
+      "console": "integratedTerminal"
+    },
+  ]
+}

@@ -1,0 +1,18 @@
+#!/sbin/openrc-run
+
+command="/usr/local/DX/DX"
+command_background=true
+pidfile="/run/DX.pid"
+description="DX Service"
+procname="DX"
+depend() {
+    need net
+}
+start_pre(){
+    cd /usr/local/DX
+}
+reload() {
+  ebegin "Reloading ${RC_SVCNAME}"
+  kill -USR1 $(cat $pidfile)
+  eend $?
+}
