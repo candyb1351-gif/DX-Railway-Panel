@@ -4,7 +4,8 @@
 FROM --platform=$BUILDPLATFORM node:22-alpine AS frontend
 WORKDIR /src/frontend
 COPY frontend/package.json frontend/package-lock.json ./
-RUN npm ci
+RUN npm config set maxsockets 3 \
+  && npm ci
 COPY frontend/ ./
 COPY internal/web/translation /src/internal/web/translation
 RUN npm run build
@@ -66,6 +67,7 @@ RUN chmod +x \
   /usr/bin/DX
 
 ENV DX_IN_DOCKER="true"
+ENV DX_MAIN_FOLDER="/app"
 ENV DX_ENABLE_FAIL2BAN="true"
 ENV DX_DB_TYPE=""
 ENV DX_DB_DSN=""
