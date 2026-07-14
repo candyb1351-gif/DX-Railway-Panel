@@ -2,24 +2,31 @@
 # Stage: Frontend (Vite)
 # ========================================================
 FROM --platform=$BUILDPLATFORM node:22-alpine AS frontend
+
 WORKDIR /src/frontend
+
 COPY frontend/package.json frontend/package-lock.json ./
 
 RUN set -eux; \
     npm config set registry https://registry.npmjs.org/; \
     npm config set maxsockets 3; \
-    npm ci \
-    || ( \
-        echo "Retry #1: upgrading npm..."; \
-        npm install -g npm@10.9.2; \
-        npm cache clean --force; \
-        npm ci \
-    ) \
-    || ( \
-        echo "Retry #2: clean install..."; \
-        rm -rf node_modules package-lock.json; \
-        npm install \
-    )
+    npm install -g npm@10.9.2
+
+RUN npm install
+
+COPY frontend/ ./
+COPY internal/web/translation /src/internal/web/translation
+
+RUN set -eux; \
+    npm run build; \
+    echo "========== /src =========="; \
+    find /src -maxdepth 5 -type d | sort; \
+    echo "========== dist folders =========="; \
+    find /src -type d -name dist | sort; \
+    echo "========== internal =========="; \
+    ls -R /src/internal || true; \
+    echo "========== frontend =========="; \
+    ls -R /src/frontend || true
 
 # ========================================================
 # Stage: Builder
