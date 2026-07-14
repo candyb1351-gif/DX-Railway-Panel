@@ -4,9 +4,7 @@
 FROM --platform=$BUILDPLATFORM node:22-alpine AS frontend
 WORKDIR /src/frontend
 COPY frontend/package.json frontend/package-lock.json ./
-RUN npm config set fetch-retries 5 \
-  && npm config set fetch-retry-mintimeout 20000 \
-  && npm config set fetch-retry-maxtimeout 120000 \
+RUN npm config set registry https://registry.npmjs.org/ \
   && npm ci
 COPY frontend/ ./
 COPY internal/web/translation /src/internal/web/translation
