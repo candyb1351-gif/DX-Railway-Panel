@@ -70,7 +70,9 @@ ENV DX_ENABLE_FAIL2BAN="true"
 ENV DX_DB_TYPE=""
 ENV DX_DB_DSN=""
 EXPOSE 2053
-VOLUME [ "/etc/DX" ]
+# Note: no VOLUME instruction here -- Railway doesn't support Docker's VOLUME
+# directive at build time. Persistence is handled by attaching a Railway
+# Volume with mount path /etc/DX from the service's Settings > Volumes tab.
 CMD [ "./DX" ]
 # railway-entrypoint.sh syncs the panel port with Railway's $PORT (if present)
 # then execs the normal DockerEntrypoint.sh -- on any other host $PORT is
